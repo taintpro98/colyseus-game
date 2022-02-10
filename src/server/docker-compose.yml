@@ -24,9 +24,9 @@ services:
     volumes:
         - postgre:/var/lib/postgresql/data
     environment:
-      POSTGRES_DB: neko
-      POSTGRES_USER: kewin
-      POSTGRES_PASSWORD: 1234567
+      POSTGRES_DB: test
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 1234
     
   redis:
     image: redis:3.2-alpine
