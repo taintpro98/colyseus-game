@@ -1,18 +1,21 @@
 import { Schema, type, ArraySchema, MapSchema } from "@colyseus/schema";
-import IBattleState from "../../../../types/IBattleState";
-import { Player } from "../../entities/Player";
-
+import { PlayerSchema } from "../entities/PlayerSchema";
+import { BossSchema } from "../entities/BossSchema";
+import IBattleState from "../../../types/IBattleState";
+import { Boss } from "../models/Boss";
 export class BattleState extends Schema implements IBattleState {
     @type(["number"]) board: ArraySchema<number>;
     @type("number") activePlayer: number = 0;
-    @type({ map: Player }) players = new MapSchema<Player>();
+    @type({ map: PlayerSchema }) players = new MapSchema<PlayerSchema>();
+    @type({ map: BossSchema }) bosses = new MapSchema<BossSchema>();
 
-    constructor() {
+    constructor(boss: Boss) {
         super();
         this.board = new ArraySchema(
             0, 0, 0,
             0, 0, 0,
             0, 0, 0
-        )
+        );
+        this.bosses.set("", new BossSchema(boss));
     }
 }

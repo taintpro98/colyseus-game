@@ -1,9 +1,8 @@
-import PGPromise from "pg-promise"; 
-import dotenv from "dotenv";  
+import PGPromise from "pg-promise";
 
-dotenv.config(); 
-console.log(process.env.DB_POSTGRESQL_USERNAME) 
-const pgp = PGPromise()  
-const connectionSetting: string = `postgresql://${process.env.DB_POSTGRESQL_USERNAME}:${process.env.DB_POSTGRESQL_PASSWORD}@${process.env.DB_POSTGRESQL_HOST}:${process.env.DB_POSTGRESQL_PORT}/${process.env.DB_POSTGRESQL_NAME}` 
+require("dotenv").config();
+const pgp = PGPromise();
 
-export const db = pgp(connectionSetting); 
+const colyseusConnectionString: string = `postgresql://${process.env.POSTGRES_USERNAME}:${process.env.POSTGRES_PASSWORD}@${process.env.POSTGRES_HOST}:${process.env.POSTGRES_PORT}/${process.env.POSTGRES_DATABASE}`;
+
+export const db = pgp(colyseusConnectionString);

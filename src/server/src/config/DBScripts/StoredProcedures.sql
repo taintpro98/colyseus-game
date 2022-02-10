@@ -1,16 +1,17 @@
-create or replace function GetPlayerSkillById(playerId int)
-returns table (player_id integer, user_name varchar, skill_id integer, skill_name varchar, skill_damage integer)
-language sql
-as $func$
-    select pl.id player_id, pl.user_name user_name, s.id skill_id, s.skill_name skill_name, s.damage skill_damage 
-    from "public"."players" pl
-    inner join "public"."playerskill" as ps
-        on pl.id = ps.player_id
-        and pl.id = 1
-    inner join "public"."skills" s
-        ON ps.skill_id  = s.id
-$func$;
+create or replace function get_player_data_by_id(IN integer)
+ returns table(name varchar, email varchar)
+as
+$$
+  	SELECT name, email FROM "public"."players"
+	WHERE id = $1
+$$
+language sql;
 
-select * from GetPlayerSkilles(1)
-
-drop function GetPlayerSkilles;
+create or replace function get_boss_data_by_id(IN integer)
+ returns table(name varchar, damage integer, blood integer)
+as
+$$
+  	SELECT name, damage, blood FROM "public"."bosses"
+	WHERE id = $1
+$$
+language sql;
