@@ -5,7 +5,5 @@ dotenv.config();
 console.log(process.env.DB_POSTGRESQL_USERNAME) 
 const pgp = PGPromise()  
 const connectionSetting: string = `postgresql://${process.env.DB_POSTGRESQL_USERNAME}:${process.env.DB_POSTGRESQL_PASSWORD}@${process.env.DB_POSTGRESQL_HOST}:${process.env.DB_POSTGRESQL_PORT}/${process.env.DB_POSTGRESQL_NAME}` 
-// const connectionLogSetting: string = `postgresql://${process.env.DB_POSTGRESQL_USERNAME}:${process.env.DB_POSTGRESQL_PASSWORD}@${process.env.DB_POSTGRESQL_HOST}:${process.env.DB_POSTGRESQL_PORT}/${process.env.DB_POSTGRESQL_LOG_NAME}`
-console.log(pgp(connectionSetting));
-export const db = pgp(connectionSetting) 
-// export const dbLog = pgp(connectionLogSetting)
+
+export const db = pgp(connectionSetting); 
