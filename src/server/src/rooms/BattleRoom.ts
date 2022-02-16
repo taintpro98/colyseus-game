@@ -11,6 +11,7 @@ import { container } from "../inversify.config";
 import { Message } from "../../../types/messages";
 import { Dispatcher } from "@colyseus/command";
 import PlayerSelectionCommand from "../commands/PlayerSelectionCommand";
+import { Skill } from "../../../types/IBattleState";
 @injectable()
 export class BattleRoom extends Room<BattleState> {
     // @inject(TYPES.PlayerService) private playerService!: IPlayerService;
@@ -23,26 +24,22 @@ export class BattleRoom extends Room<BattleState> {
     onCreate() {
         this.setState(new BattleState());
 
-        this.onMessage(Message.PlayerSelection, (client, message: { index: number }) => {
+        this.onMessage(Message.PlayerSelection, (client, message: { skill_info: { [key: string]: Skill} }) => {
             this.dispatcher.dispatch(new PlayerSelectionCommand(), {
                 client,
-                index: message.index
+                skill_info: message.skill_info
             });
         });
     }
 
     async onJoin(client: Client, options: { playerId: number }) {
         const player = new PlayerSchema();
-        let boss = await this.bossService.getBossDataById(1);
         player.name = `Player ${this.clients.length}`;
-        player.position.x = Math.random();
-        player.position.y = Math.random();
-
         this.state.players.set(client.sessionId, player);
-        this.state.bosses.set("", new BossSchema(boss));
-        // console.log("sessionId", client.sessionId);
-        // console.log("id", client.id);
-        // console.log("playerName", options.playerName);
+
+        let boss = await this.bossService.getBossDataById(1);
+        this.state.bosses.push(new BossSchema(boss));
+
     }
 
     onLeave(client: Client) {

@@ -15,7 +15,8 @@ export default class BossRepository implements IBossRepository {
             id: bossId,
             name: result[0].name,
             damage: result[0].damage,
-            blood: result[0].blood
+            blood: result[0].blood,
+            speed: result[0].speed
         };
         return boss;
     }

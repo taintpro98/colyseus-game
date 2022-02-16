@@ -1,5 +1,5 @@
-import { Schema, type } from "@colyseus/schema";
-import { Position } from "./attr/Position";
+import { Schema, type, ArraySchema } from "@colyseus/schema";
+import { NekoSchema } from "./NekoSchema";
 
 export interface PressedKeys {
     x: number;
@@ -8,7 +8,15 @@ export interface PressedKeys {
 
 export class PlayerSchema extends Schema {
     @type("string") name: string = "";
-    @type(Position) position = new Position();
+    @type([ NekoSchema ]) nekoes: ArraySchema<NekoSchema>;
 
     pressedKeys: PressedKeys = { x: 0, y: 0 };
+    constructor(){
+        super();
+        this.nekoes = new ArraySchema(
+            new NekoSchema("pikachu", 4, 90),
+            new NekoSchema("doraemon", 3, 80),
+            new NekoSchema("optimus", 6, 95)
+        )
+    }
 }

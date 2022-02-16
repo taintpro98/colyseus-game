@@ -1,14 +1,14 @@
 import { Schema, type, ArraySchema, MapSchema } from "@colyseus/schema";
 import { PlayerSchema } from "../entities/PlayerSchema";
 import { BossSchema } from "../entities/BossSchema";
-import IBattleState, { Cell } from "../../../types/IBattleState";
-import { Boss } from "../models/Boss";
-export class BattleState extends Schema implements IBattleState {
+import { ActionSchema } from "../entities/ActionSchema";
+import { Action } from "../../../types/IBattleState";
+export class BattleState extends Schema {
     @type(["number"]) board: ArraySchema<number>;
     @type("number") activePlayer: number = 0;
     @type({ map: PlayerSchema }) players = new MapSchema<PlayerSchema>();
-    @type({ map: BossSchema }) bosses = new MapSchema<BossSchema>();
-    @type("number") turn: number = 0;
+    @type([BossSchema]) bosses: ArraySchema<BossSchema>;
+    @type([ActionSchema]) queue: ArraySchema<ActionSchema>;
 
     constructor() {
         super();
@@ -17,6 +17,15 @@ export class BattleState extends Schema implements IBattleState {
             0, 0, 0,
             0, 0, 0
         );
+        this.bosses = new ArraySchema();
+        this.queue = new ArraySchema();
         // this.bosses.set("", new BossSchema(boss));
+    }
+
+    addQueue(actions: Action[]) {
+        this.queue = new ArraySchema();
+        actions.forEach(value => {
+            this.queue.push(new ActionSchema(value));
+        })
     }
 }
