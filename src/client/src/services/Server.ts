@@ -22,29 +22,26 @@ export default class Server {
         this.room.onStateChange.once(state => {
             this.events.emit('once-state-changed', state, this.room?.sessionId);
             console.log("room", this.room?.sessionId);
-            console.log("state", state);
         });
 
 
         // this.room.state.onChange = (changes) => {
-        //     console.log("join");
-        //     console.log("sdhjfbsfhs");
+        //     console.log("xxxxxxxxxx", changes);
         //     changes.forEach(change => {
-        //         console.log("fuck", change);
         //         const { field, value } = change;
         //         switch(field){
-        //             case 'board':
-        //                 console.log("value", value);
-        //                 this.events.emit('board-changed', value);
+        //             case 'queue':
+        //                 this.events.emit('queue-changed', value);
+        //                 break;
+        //             case 'bosses':
         //                 break;
         //         }
-
         //     })
         // }
 
         this.room.onStateChange((state) => {
-            console.log("New room state:", state.queue[0]);
-            this.events.emit('queue-changed', state);
+            this.events.emit('queue-changed', state.queue);
+            this.events.emit('blood-changed', state, this.room?.sessionId);
         });
 
         // this.room.state.queue.onChange = (boss, sessionId) => {
@@ -55,10 +52,6 @@ export default class Server {
         //     console.log(this.room?.state.board);
         //     this.events.emit('board-changed', this.room?.state.board);
         // }
-
-        // room.onStateChange((state) => {
-        //     console.log(room.name, "has new state:", state);
-        // });
 
         // room.onMessage("action", (message) => {
         //     console.log("received on", room.name, message);
@@ -72,7 +65,6 @@ export default class Server {
 
     sendSkillInformation(skill_info: { [key: string]: Skill }) {
         if (!this.room) return;
-        console.log("sendSkillInformation", skill_info);
         this.room.send(Message.PlayerSelection, { skill_info: skill_info });
     }
 
@@ -80,11 +72,15 @@ export default class Server {
         this.events.once('once-state-changed', cb, context);
     }
 
-    onQueueChanged(cb: (state: IBattleState) => void, context?: any){
+    onQueueChanged(cb: (queue: any[]) => void, context?: any){
         this.events.on('queue-changed', cb, context);
     }
 
     onBoardChanged(cb: (board: number[]) => void, context?: any) {
         this.events.on('board-changed', cb, context);
+    }
+
+    onBloodChanged(cb: (state: IBattleState, sessionId: string) => void, context?: any){
+        this.events.on('blood-changed', cb, context);
     }
 }

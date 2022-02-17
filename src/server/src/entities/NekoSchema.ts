@@ -12,8 +12,8 @@ export class NekoSchema extends Schema {
         this.damage = damage;
         this.blood = blood;
         this.skills = new ArraySchema(
-            new SkillSchema(1, "attack", 0, 3, ""),
-            new SkillSchema(2, "resume", 1, 4, "")
+            new SkillSchema(1, "attack", 0, 3, `{"damage":3,"blood":-1}`),
+            new SkillSchema(2, "resume", 1, 4, `{"damage":0,"blood":3}`)
         );
     }
 }

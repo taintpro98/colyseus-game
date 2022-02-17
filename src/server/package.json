@@ -6,7 +6,7 @@
   "scripts": {
     "start": "ts-node-dev --respawn --pretty --transpile-only src/index.ts",
     "data": "ts-node-dev --respawn --pretty --transpile-only src/repositories/data/database.ts",
-    "test": "ts-node-dev --respawn --pretty --transpile-only src/repositories/PlayerRepository.ts"
+    "test": "ts-node-dev --respawn --pretty --transpile-only test.ts"
   },
   "keywords": [],
   "author": "",

@@ -8,7 +8,7 @@ export class BossSchema extends Schema {
     @type("number") damage = 0;
     @type("number") blood = 0;
     @type("number") speed = 0;
-    @type("string") metadata = "";
+    @type("string") metadata = `{"damage":3,"blood":-1}`;
 
     constructor(boss: Boss){
         super();

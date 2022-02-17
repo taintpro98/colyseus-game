@@ -21,8 +21,10 @@ export class BattleRoom extends Room<BattleState> {
     private bossService = container.get<IBossService>(TYPES.BossService);
 
 
-    onCreate() {
+    async onCreate() {
         this.setState(new BattleState());
+        let boss = await this.bossService.getBossDataById(1);
+        this.state.bosses.push(new BossSchema(boss));
 
         this.onMessage(Message.PlayerSelection, (client, message: { skill_info: { [key: string]: Skill} }) => {
             this.dispatcher.dispatch(new PlayerSelectionCommand(), {
@@ -32,14 +34,11 @@ export class BattleRoom extends Room<BattleState> {
         });
     }
 
-    async onJoin(client: Client, options: { playerId: number }) {
+    onJoin(client: Client, options: { playerId: number }) {
         const player = new PlayerSchema();
         player.name = `Player ${this.clients.length}`;
         this.state.players.set(client.sessionId, player);
-
-        let boss = await this.bossService.getBossDataById(1);
-        this.state.bosses.push(new BossSchema(boss));
-
+        this.state.sessionId = client.sessionId;
     }
 
     onLeave(client: Client) {

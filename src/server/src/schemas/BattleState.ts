@@ -9,6 +9,7 @@ export class BattleState extends Schema {
     @type({ map: PlayerSchema }) players = new MapSchema<PlayerSchema>();
     @type([BossSchema]) bosses: ArraySchema<BossSchema>;
     @type([ActionSchema]) queue: ArraySchema<ActionSchema>;
+    @type("string") sessionId: string = "";
 
     constructor() {
         super();
