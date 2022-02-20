@@ -44,7 +44,6 @@ export default class PlayerSelectionCommand extends Command<BattleRoom, Payload>
         });
         await this.room.state.addQueue(inter_queue);
         this.runBattlePhase();
-        console.log(this.room.state.bosses[0].blood);
     }
 
     runBattlePhase(){

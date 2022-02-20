@@ -1,0 +1,9 @@
+[2/20/2022, 3:15:56 PM] @colyseus/loadtest
+endpoint: ws://localhost:2567
+roomName: game
+numClients: 2000
+scriptFile: /Users/macbook/Documents/Blockchain/code/colyseus-game/loadtest/example.ts
+logLevel: all
+output: /Users/macbook/Documents/Blockchain/code/colyseus-game/loadtest/loadtest.log
+[2/20/2022, 3:16:00 PM] ServerError
+[2/20/2022, 3:16:01 PM] ServerError

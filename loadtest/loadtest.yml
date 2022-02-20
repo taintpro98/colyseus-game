@@ -1,0 +1,8 @@
+# endpoint: ws://localhost:2567
+# room: game
+# numClients: 50
+bob:
+  item1:
+    cats: bananas
+  item2:
+    cats: apples

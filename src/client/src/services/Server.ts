@@ -64,6 +64,7 @@ export default class Server {
     // }
 
     sendSkillInformation(skill_info: { [key: string]: Skill }) {
+        console.log("skill_info", skill_info);
         if (!this.room) return;
         this.room.send(Message.PlayerSelection, { skill_info: skill_info });
     }
