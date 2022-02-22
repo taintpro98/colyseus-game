@@ -30,6 +30,7 @@
     "mongoose": "^6.2.1",
     "pg-promise": "^10.11.1",
     "reflect-metadata": "^0.1.13",
-    "ts-node-dev": "^1.1.8"
+    "ts-node-dev": "^1.1.8",
+    "yarn": "^1.22.17"
   }
 }

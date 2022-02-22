@@ -7,7 +7,7 @@ export class BattleState extends Schema {
     @type(["number"]) board: ArraySchema<number>;
     @type("number") activePlayer: number = 0;
     @type({ map: PlayerSchema }) players = new MapSchema<PlayerSchema>();
-    @type([BossSchema]) bosses: ArraySchema<BossSchema>;
+    @type([BossSchema]) bosses: ArraySchema<BossSchema> = new ArraySchema();
     @type([ActionSchema]) queue: ArraySchema<ActionSchema>;
     @type("string") sessionId: string = "";
 
@@ -18,9 +18,7 @@ export class BattleState extends Schema {
             0, 0, 0,
             0, 0, 0
         );
-        this.bosses = new ArraySchema();
         this.queue = new ArraySchema();
-        // this.bosses.set("", new BossSchema(boss));
     }
 
     addQueue(actions: Action[]) {

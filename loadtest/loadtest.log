@@ -1,9 +1,11 @@
-[2/20/2022, 3:15:56 PM] @colyseus/loadtest
+[2/22/2022, 6:05:04 PM] @colyseus/loadtest
 endpoint: ws://localhost:2567
 roomName: game
-numClients: 2000
-scriptFile: /Users/macbook/Documents/Blockchain/code/colyseus-game/loadtest/example.ts
+numClients: 1
+scriptFile: /home/bruno/Documents/bruno/colyseus-game/loadtest/loadtest.ts
 logLevel: all
-output: /Users/macbook/Documents/Blockchain/code/colyseus-game/loadtest/loadtest.log
-[2/20/2022, 3:16:00 PM] ServerError
-[2/20/2022, 3:16:01 PM] ServerError
+output: /home/bruno/Documents/bruno/colyseus-game/loadtest/loadtest.log
+[2/22/2022, 6:05:09 PM] Finished. Summary:
+Successful connections: 0
+Failed connections: 0
+Total errors: 0

@@ -1,7 +1,7 @@
 
 endpoint="ws://localhost:2567"
 room="game"
-numClients=2000
+numClients=1
 
-npx colyseus-loadtest example.ts --room $room --numClients $numClients --endpoint $endpoint
+npx colyseus-loadtest loadtest.ts --room $room --numClients $numClients --endpoint $endpoint
 # yq eval '.bob.*.cats' sample.yaml
