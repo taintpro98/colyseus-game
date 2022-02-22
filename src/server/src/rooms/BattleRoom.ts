@@ -23,17 +23,24 @@ export class BattleRoom extends Room<BattleState> {
 
     async onCreate() {
         this.setState(new BattleState());
-        this.onMessage("EndTurn", (client, {}) => {
+        
+        this.onMessage("StartTurn", (client, action: number) => {
+            console.log(action);
+        });
+        this.onMessage("Battle", (client, action: number) => {
+            this.broadcast("Battle", "end turn");
+        });
+        this.onMessage("EndTurn", (client, action: number) => {
             this.broadcast("EndTurn", "end turn");
-        })
+        });
     }
 
-    onJoin(client: Client, options: { playerId: number }) {
+    async onJoin(client: Client, options: { playerId: number }) {
         // const player = new PlayerSchema();
         // player.name = `Player ${this.clients.length}`;
         // this.state.players.set(client.sessionId, player);
         // this.state.sessionId = client.sessionId;
-        this.broadcast("Ready", "ready");
+        await this.broadcast("Ready", "ready");
         setTimeout(() => {
             this.broadcast("StartRound", "start round");
         }, 5000);
