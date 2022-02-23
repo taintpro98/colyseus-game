@@ -1,5 +1,5 @@
 import "reflect-metadata";
-import { Room, Client } from "colyseus";
+import { Room, Client, Delayed } from "colyseus";
 import { injectable, inject } from "inversify";
 import { PlayerSchema } from "../entities/PlayerSchema";
 import { BossSchema } from "../entities/BossSchema";
@@ -10,36 +10,59 @@ import IBossService from "../services/interfaces/IBossService";
 import { container } from "../inversify.config";
 import { Message } from "../../../types/messages";
 import { Dispatcher } from "@colyseus/command";
-import PlayerSelectionCommand from "../commands/PlayerSelectionCommand";
-import { Skill } from "../../../types/IBattleState";
+import StartTurnCommand from "../commands/StartTurnCommand";
+import StartBattleCommand from "../commands/StartBattleCommand";
+import EndTurnCommand from "../commands/EndTurnCommand";
+import InitializeMapCommand from "../commands/InitializeMapCommand";
+import PlayerJoinCommand from "../commands/PlayerJoinCommand";
+import GameFlowCommand from "../commands/GameFlowCommand";
+
 @injectable()
 export class BattleRoom extends Room<BattleState> {
     // @inject(TYPES.PlayerService) private playerService!: IPlayerService;
     // @inject(TYPES.BossService) private bossService!: IBossService;
-    private dispatcher = new Dispatcher(this);
-    private playerService = container.get<IPlayerService>(TYPES.PlayerService);
-    private bossService = container.get<IBossService>(TYPES.BossService);
-    maxClients = 2;
+    // private playerService = container.get<IPlayerService>(TYPES.PlayerService);
+    // private bossService = container.get<IBossService>(TYPES.BossService);
+    maxClients = 1;
+    public delayedInterval!: Delayed;
+    public dispatcher = new Dispatcher(this);
 
     async onCreate() {
+        this.clock.start();
         this.setState(new BattleState());
-        this.onMessage("EndTurn", (client, {}) => {
-            this.broadcast("EndTurn", "end turn");
-        })
+
+        this.onMessage("StartTurn", async (client: Client,) => {
+            this.delayedInterval.clear();
+            this.dispatcher.dispatch(new StartTurnCommand(), {});
+        });
+
+        this.onMessage("Battle", async (client: Client, action: number) => {
+            this.delayedInterval.clear();
+            this.dispatcher.dispatch(new StartBattleCommand(), action);
+        });
+
+        this.onMessage("EndTurn", async (client: Client,) => {
+            this.delayedInterval.clear();
+            this.dispatcher.dispatch(new EndTurnCommand(), {});
+        });
     }
 
-    onJoin(client: Client, options: { playerId: number }) {
-        // const player = new PlayerSchema();
-        // player.name = `Player ${this.clients.length}`;
-        // this.state.players.set(client.sessionId, player);
-        // this.state.sessionId = client.sessionId;
-        this.broadcast("Ready", "ready");
-        setTimeout(() => {
-            this.broadcast("StartRound", "start round");
-        }, 5000);
-        // while(true){
-        //     this.broadcast("CalculateQueue", "queue");
-        // }
+    async onJoin(client: Client) {
+        // console.log("init map");
+        // await this.broadcast("Ready", "ready");
+        // setTimeout(() => {
+        //     this.broadcast("StartRound", "start round");
+        //     let x = false;
+        //     while (x) {
+        //         this.broadcast("CalculateQueue", "queue");
+        //     }
+        // }, 5000);
+        await this.dispatcher.dispatch(new InitializeMapCommand(), {});
+        await this.dispatcher.dispatch(new PlayerJoinCommand(), {
+            client,
+        });
+        await this.dispatcher.dispatch(new GameFlowCommand(), {});
+
     }
 
     // onLeave(client: Client) {
@@ -66,5 +89,9 @@ export class BattleRoom extends Room<BattleState> {
             // 20 seconds expired. let's remove the client.
             this.state.players.delete(client.sessionId);
         }
+    }
+
+    sleep(ms: number) {
+        return new Promise(resolve => setTimeout(resolve, ms));
     }
 }
