@@ -26,38 +26,38 @@ export async function onJoin(this: Room) {
         }
     }
 
-    // this.onMessage("*", async (type, message) => {
-    //     switch (type) {
-    //         case EMessagePVERoom.Ready:
-    //             console.log("ready");
-    //             clientState.ready = true;
-    //             break;
-    //         case EMessagePVERoom.StartRound:
-    //             console.log("start-round", message);
-    //             clientState.startRound = true;
-    //             if(clientState.leftNekos > 0) playTurn();
-    //             break;
-    //         case EMessagePVERoom.CalculateQueue:
-    //             console.log("queue", message);
-    //             break;
-    //         case EMessagePVERoom.Battle:
-    //             console.log("result", message);
-    //             console.log("animation");
-    //             await sleep(10000);
-    //             this.send(EMessagePVERoom.EndTurn, { x: 1 });
-    //             break;
-    //         case EMessagePVERoom.EndTurn:
-    //             clientState.leftNekos--;
-    //             console.log("endturn", message);
-    //             if(clientState.leftNekos > 0) playTurn();
-    //             break;
-    //         case EMessagePVERoom.EndRound:
-    //             console.log("endround", message);
-    //             break;
-    //         default:
-    //             console.log("default");
-    //     }
-    // });
+    this.onMessage("*", (type, message) => {
+        switch (type) {
+            case EMessagePVERoom.Ready:
+                console.log("ready");
+                clientState.ready = true;
+                break;
+            case EMessagePVERoom.StartRound:
+                console.log("start-round", message);
+                clientState.startRound = true;
+                if(clientState.leftNekos > 0) playTurn();
+                break;
+            case EMessagePVERoom.CalculateQueue:
+                console.log("queue", message);
+                break;
+            case EMessagePVERoom.Battle:
+                console.log("result", message);
+                console.log("animation");
+                // await sleep(10000);
+                // this.send(EMessagePVERoom.EndTurn, { x: 1 });
+                break;
+            case EMessagePVERoom.EndTurn:
+                clientState.leftNekos--;
+                console.log("endturn", message);
+                if(clientState.leftNekos > 0) playTurn();
+                break;
+            case EMessagePVERoom.EndRound:
+                console.log("endround", message);
+                break;
+            default:
+                console.log("default");
+        }
+    });
 
 }
 
