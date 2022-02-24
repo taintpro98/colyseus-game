@@ -23,10 +23,13 @@ export default class Game extends Phaser.Scene {
 
     private createMap(state: IBattleState, sessionId: string){
         const { width, height } = this.scale;
-        const size = 196;
+        console.log("this scale", this.scale.width);
+        const size = 169;
+
+        console.log("this is what", this);
 
         let x = width * 0.5 - size;
-        let y = height * 0.5 - size;
+        let y = height * 0.2 - size;
 
         const player = state.players[`${sessionId}`];
         this.nekoes = player.nekoes;
@@ -38,7 +41,7 @@ export default class Game extends Phaser.Scene {
             }
             this.add.rectangle(x, y, size, size, 0xffffff);
             if(idx === 1){
-                const bossCell = this.add.circle(x, y, 100, 0x0000ff);
+                const bossCell = this.add.circle(x, y, 85, 0x0000ff);
                 this.add.text(x-80, y, `Boss ${state.bosses[0].name}`);
                 this.add.text(x-80, y+20, `Boss blood: ${state.bosses[0].blood}`);
             }
@@ -48,7 +51,7 @@ export default class Game extends Phaser.Scene {
                 });
             }
             if(idx === 6 || idx === 7 || idx === 8){
-                const nekoCell = this.add.circle(x, y, 95, 0xFFC0CB);
+                const nekoCell = this.add.circle(x, y, 85, 0xFFC0CB);
                 this.add.text(x-80, y, `Neko ${this.nekoes[idx-6].name}`);
                 this.add.text(x-80, y+20, `Neko blood: ${this.nekoes[idx-6].blood}`);
                 this.addSkills(x, y, this.nekoes[idx-6]);
