@@ -1,3 +1,4 @@
+import { roomNekos, enemies } from './../services/mockdata';
 import Phaser from "phaser";
 import Server from "../services/Server";
 import IBattleState, { Neko, Skill } from "../../../types/IBattleState";
@@ -17,33 +18,26 @@ export default class Game extends Phaser.Scene {
         this.server = server;
         if(!this.server) throw new Error('Server instance missing');
         await this.server.join();
-        this.server.onceStateChanged(this.createMap, this);
-        
+        this.server.initRoom(this.createMap, this);
     }
 
-    private createMap(state: IBattleState, sessionId: string){
+    private createMap(map: number[], roomNekos: any, enemies: any){
         const { width, height } = this.scale;
-        console.log("this scale", this.scale.width);
-        const size = 169;
-
-        console.log("this is what", this);
+        const size = 196;
 
         let x = width * 0.5 - size;
         let y = height * 0.2 - size;
 
-        const player = state.players[`${sessionId}`];
-        this.nekoes = player.nekoes;
-
-        state.board.forEach((cellState, idx) => {
+        map.forEach((cellState, idx) => {
             if(idx > 0 && idx % 3 === 0){
                 y += size + 5;
                 x = width * 0.5 - size;
             }
             this.add.rectangle(x, y, size, size, 0xffffff);
-            if(idx === 1){
+            if(idx === 0 || idx === 1 || idx === 2){
                 const bossCell = this.add.circle(x, y, 85, 0x0000ff);
-                this.add.text(x-80, y, `Boss ${state.bosses[0].name}`);
-                this.add.text(x-80, y+20, `Boss blood: ${state.bosses[0].blood}`);
+                this.add.text(x-80, y, `Boss ${enemies[idx].name}`);
+                this.add.text(x-80, y+20, `Boss blood: ${enemies[idx].metadata["health"]}`);
             }
             if(idx === 4){
                 this.add.star(x, y, 10, 10, 80, 0xff0000).setInteractive().on(Phaser.Input.Events.GAMEOBJECT_POINTER_UP, () => {
@@ -52,15 +46,11 @@ export default class Game extends Phaser.Scene {
             }
             if(idx === 6 || idx === 7 || idx === 8){
                 const nekoCell = this.add.circle(x, y, 85, 0xFFC0CB);
-                this.add.text(x-80, y, `Neko ${this.nekoes[idx-6].name}`);
-                this.add.text(x-80, y+20, `Neko blood: ${this.nekoes[idx-6].blood}`);
-                this.addSkills(x, y, this.nekoes[idx-6]);
+                this.add.text(x-80, y, `Neko ${roomNekos[idx-6].name}`);
+                this.add.text(x-80, y+20, `Neko blood: ${roomNekos[idx-6].metadata["health"]}`);
+                this.addSkills(x, y, roomNekos[idx-6]);
+                this.addItems(x, y, roomNekos[idx-6]);
             }
-            
-            // this.cells.push({
-            //     display: cell,
-            //     value: cellState
-            // });
             x += size + 5;
         })
         // this.server?.onBoardChanged(this.handleBoardChanged, this);
@@ -70,11 +60,21 @@ export default class Game extends Phaser.Scene {
 
     private addSkills(x: number, y: number, neko: Neko){
         neko.skills.forEach((value, idx) => {
-            this.add.rectangle(x + (2*idx - 1)*60, y + 150, 80, 80, 0x00ff00).setInteractive().on(Phaser.Input.Events.GAMEOBJECT_POINTER_UP, () => {
+            this.add.rectangle(x - 60, y + 85*(idx+1) + 55, 80, 80, 0x00ff00).setInteractive().on(Phaser.Input.Events.GAMEOBJECT_POINTER_UP, () => {
                 this.pickSkills(neko, value);
-                this.add.star(x + (2*idx - 1)*60, y + 150, 4, 4, 30, 0xff0000);
+                this.add.star(x - 60, y + 85*(idx+1) + 55, 4, 4, 30, 0xff0000);
             });
-            this.add.text(x + (2*idx - 1)*60 - 30, y+150, `${value.name}`);
+            this.add.text(x - 90, y + 85*(idx+1) + 55, `${value.name}`);
+        })
+    }
+
+    private addItems(x: number, y: number, neko: Neko){
+        neko.skills.forEach((value, idx) => {
+            this.add.rectangle(x + 60, y + 85*(idx+1) + 55, 80, 80, 0xa020f0).setInteractive().on(Phaser.Input.Events.GAMEOBJECT_POINTER_UP, () => {
+                this.pickSkills(neko, value);
+                this.add.star(x + 60, y + 85*(idx+1) + 55, 4, 4, 30, 0xff0000);
+            });
+            this.add.text(x + 30, y + 85*(idx+1) + 55, `xxx`);
         })
     }
 
@@ -83,7 +83,7 @@ export default class Game extends Phaser.Scene {
     }
 
     private addQueue(queue: any[]){
-        let x = 900;
+        let x = 300;
         let y = 100;
         queue.forEach((action, idx) => {
             this.add.rectangle(x, y + idx * 100, 80, 80, 0x00ff00);
@@ -97,42 +97,4 @@ export default class Game extends Phaser.Scene {
         console.log("neko 2", state.players[sessionId].nekoes[1].blood);
         console.log("neko 3", state.players[sessionId].nekoes[2].blood);
     }
-
-    // private createEnemies(boss){
-    //     this.add.circle(x, y, 60, 0x0000ff);
-    //         this.add.text(x-50, y, "bruno");
-    // }
-
-    // private createBoard(state: IBattleState){
-    //     const { width, height } = this.scale;
-    //     const size = 128;
-
-    //     let x = width * 0.5 - size;
-    //     let y = height * 0.5 - size;
-    //     state.board.forEach((cellState, idx) => {
-    //         console.log("cellState", cellState);
-    //         if(idx > 0 && idx % 3 === 0){
-    //             y += size + 5;
-    //             x = width * 0.5 - size;
-    //         }
-    //         const cell = this.add.rectangle(x, y, size, size, 0xffffff).setInteractive().on(Phaser.Input.Events.GAMEOBJECT_POINTER_UP, () => {
-    //             this.server?.makeSelection(idx);
-    //         });
-    //         this.cells.push({
-    //             display: cell,
-    //             value: cellState
-    //         });
-    //         x += size + 5;
-    //     })
-    //     this.server?.onBoardChanged(this.handleBoardChanged, this);
-    // }
-
-    // private handleBoardChanged(board: number[]) {
-    //     for(let i=0; i<board.length; i++){
-    //         const cell = this.cells[i];
-    //         if(cell.value !== board[i]){
-    //             this.add.star(cell.display.x, cell.display.y, 4, 4, 30, 0xff0000);
-    //         }
-    //     }
-    // }
 }
